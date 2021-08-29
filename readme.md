@@ -1,16 +1,16 @@
-# This is an AWS serverless template (nodejs) with a cron job. 
+## There's a cron job attached to this AWS serverless template (nodejs).
 
-## Add serverless as global package
+### Add serverless as global package
 ```Bash
 npm i serverless -g
 ```
 
-## Set aws credential
+### Set aws credential
 ```Bash
 serverless config credentials --provider aws --key yourKey --secret YourSecret
 ```
 
-## Test locally
+### Test locally
 
 In a local context, see if the function works.
 
@@ -24,13 +24,13 @@ Something like this should happen as an outcome. as long as everything is in ord
 C:\Project\Aws Lambda\archi>serverless invoke local -f log-cron
 hello-im-from-cron-job
 ```
-## Deploy
+### Deploy
 
 ```Bash
 serverless deploy
 ```
 
-## Tail cron job
+### Tail cron job
 
 Every 5 minutes, the cron job will run.
 
