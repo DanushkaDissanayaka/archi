@@ -45,3 +45,7 @@ START RequestId: 9857e3f7-134a-4e67-8df3-dfd84d522f86 Version: $LATEST
 END RequestId: 9857e3f7-134a-4e67-8df3-dfd84d522f86
 REPORT RequestId: 9857e3f7-134a-4e67-8df3-dfd84d522f86  Duration: 190.77 ms     Billed Duration: 191 ms Memory Size: 128 MB     Max Memory Used: 78 MB
 ```
+
+
+Your ```Lambda function may be stopped``` by setting the ```enabled flag to false in log-cron function ``` and then running ```serverless deploy``` again.\
+You may also use ```serverless remove``` if you wish to ```delete your entire stack```.
