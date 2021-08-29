@@ -1,4 +1,4 @@
-# This is an Amazon Web Services (AWS) serverless nodejs template with a cron job. 
+# This is an AWS serverless template (nodejs) with a cron job. 
 
 ## Add serverless as global package
 ```Bash
