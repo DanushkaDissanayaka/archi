@@ -1,27 +1,27 @@
+
+const serverless = require('serverless-http');
 const express = require('express');
 const app = express();
+const port = process.env.PORT || 5000;
 
-app.use(express.json());
-app.use(express.urlencoded({extended:false}))
-
-//GET
-app.get('/', (req, res) => {
-   res.status(200).send('hello world!');
+// Simple express routes
+app.get('/', function (req, res) {
+   res.send('Hello World!')
 });
 
-//GET req Simply sends the current time
-app.get('/time', (req, res) => {
-   let timeNow = Date(Date.now());
-   res.status(200).send(timeNow.toString());
+app.get('/name', (req, res) => {
+   res.status(200).send('My name is Shawn!');
 });
 
-//POST req logs the name and sends it
-//To check send a POST req with "name" and check your lambda function console
-app.post('/logthis', (req, res) => {
-   const name = req.body.name;
-   const toLog = `\n >>> My name is ${name} <<< \n`
-   console.info(toLog)
-   res.status(200).send(toLog);
-});
+// // Server
+// app.listen(port, () => {
+//    console.log(`Listening on: http://localhost:${port}`);
+// });
 
-module.exports = app;
+// cron job function
+module.exports.hello = (event, context, callback)=>{
+   console.log("hello-im-from-cron-job");
+   callback(null);
+}
+
+module.exports.handler = serverless(app);
