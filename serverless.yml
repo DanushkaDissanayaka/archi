@@ -18,8 +18,8 @@ functions:
           method: ANY
           cors: true
   log-cron:
-    handler: src/app.hello
+    handler: src/scheduler.handler
     events:
       - schedule:
-          rate: cron(*/5 * * * ? *)
-          enabled: true
+          rate: cron(0 3-13 ? * MON-FRI *)
+          enabled: false

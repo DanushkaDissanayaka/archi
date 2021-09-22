@@ -1,4 +1,5 @@
 
+require('dotenv').config();
 const serverless = require('serverless-http');
 const express = require('express');
 const app = express();
@@ -13,15 +14,13 @@ app.get('/name', (req, res) => {
    res.status(200).send('My name is Shawn!');
 });
 
-// // Server
-// app.listen(port, () => {
-//    console.log(`Listening on: http://localhost:${port}`);
-// });
-
-// cron job function
-module.exports.hello = (event, context, callback)=>{
-   console.log("hello-im-from-cron-job");
-   callback(null);
-}
+app.get('/env', (req, res) => {
+   res.status(200).json({envName:process.env.ENV_NAME, UNSET_VAR_IN_LAMBDA:process.env.UNSET_VAR_IN_LAMBDA});
+});
 
 module.exports.handler = serverless(app);
+
+// Server
+app.listen(port, () => {
+   console.log(`Listening on: http://localhost:${port}`);
+});
