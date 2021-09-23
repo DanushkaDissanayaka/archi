@@ -15,7 +15,11 @@ app.get('/name', (req, res) => {
 });
 
 app.get('/env', (req, res) => {
-   res.status(200).json({envName:process.env.ENV_NAME, UNSET_VAR_IN_LAMBDA:process.env.UNSET_VAR_IN_LAMBDA});
+   res.status(200).json({envName:process.env.ENV_NAME, 
+      UNSET_VAR_IN_LAMBDA:process.env.UNSET_VAR_IN_LAMBDA, 
+      PARM_FROM_PARAMETER_STORE:process.env.VAR_IN_PARAMETER_STORE,
+      VAR_IN_PARAMETER_KMS_STORE:process.env.VAR_IN_PARAMETER_KMS_STORE
+   });
 });
 
 module.exports.handler = serverless(app);

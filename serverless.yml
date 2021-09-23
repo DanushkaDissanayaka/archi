@@ -1,10 +1,20 @@
 service: sample-app
+
+
+custom:
+  settings:
+    VAR_IN_PARAMETER_STORE: ${ssm:serverless-parameter-store-secret-value}
+    VAR_IN_PARAMETER_KMS_STORE: ${ssm:/serverless/parameter/kms-secret-value~true}
+
 provider:
   name: aws
   runtime: nodejs14.x
   stage: dev
   region: us-east-1
   memorySize: 128
+  environment: ${self:custom.settings}
+  lambdaHashingVersion: 20201221
+
 functions:
   app:
     handler: src/app.handler

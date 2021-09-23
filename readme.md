@@ -46,6 +46,51 @@ END RequestId: 9857e3f7-134a-4e67-8df3-dfd84d522f86
 REPORT RequestId: 9857e3f7-134a-4e67-8df3-dfd84d522f86  Duration: 190.77 ms     Billed Duration: 191 ms Memory Size: 128 MB     Max Memory Used: 78 MB
 ```
 
-
 Your ```Lambda function may be stopped``` by setting the ```enabled flag to false in log-cron function ``` and then running ```serverless deploy``` again.\
 You may also use ```serverless remove``` if you wish to ```delete your entire stack```.
+
+### Parameter store
+
+to get ENV variables form parameter store first set the parameter with aws console.
+```
+aws --profile default --region us-east-1 ssm put-parameter --name serverless-parameter-store-secret-value --value mySuperSecretValueFromParameterStore --type String
+```
+set env variable reference in serverless.yml
+
+```yml
+custom:
+  settings:
+    VAR_IN_PARAMETER_STORE: ${ssm:serverless-parameter-store-secret-value}
+
+provider:
+  region: us-east-1
+  environment: ${self:custom.settings}
+```
+
+### Parameter store with KMS
+
+Create KMS key first and get the key id from KMS
+
+```
+aws kms create-key --description kms-for-lambda --region us-east-1
+```
+Add env value to parameter store with KMS key id
+```
+aws --profile default --region us-east-1 ssm put-parameter --name /serverless/parameter/kms-secret-value --value mySuperSecretValueWithKMS --type SecureString --key-id 3da7b7ee-a9b9-4065-baa6-0ded624d8dfa
+```
+
+set env variable reference in serverless.yml
+
+```yml
+custom:
+  settings:
+    VAR_IN_PARAMETER_KMS_STORE: ${ssm:serverless-parameter-kms-secret-value}
+```
+
+To decrypt value add
+
+```yml
+custom:
+  settings:
+    VAR_IN_PARAMETER_KMS_STORE: ${ssm:serverless-parameter-kms-secret-value~true}
+```
