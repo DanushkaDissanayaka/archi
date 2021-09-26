@@ -76,7 +76,7 @@ aws kms create-key --description kms-for-lambda --region us-east-1
 ```
 Add env value to parameter store with KMS key id
 ```
-aws --profile default --region us-east-1 ssm put-parameter --name /serverless/parameter/kms-secret-value --value mySuperSecretValueWithKMS --type SecureString --key-id 3da7b7ee-a9b9-4065-baa6-0ded624d8dfa
+aws --profile default --region us-east-1 ssm put-parameter --name /serverless/parameter/kms-secret-value --value mySuperSecretValueWithKMS --type SecureString --key-id 3da7b7ee-a9b9-4023-baa6-0dec325s32dk
 ```
 
 set env variable reference in serverless.yml
@@ -93,4 +93,50 @@ To decrypt value add
 custom:
   settings:
     VAR_IN_PARAMETER_KMS_STORE: ${ssm:serverless-parameter-kms-secret-value~true}
+```
+
+
+## Multiple stages
+
+Base on the stage property we can set the environment veritable for multiple stages
+```yml
+#provider
+Provider:
+  stage: ${opt:stage, 'dev'}
+  environment:
+    DB_HOST: ${self:custom.db_host.${self:provider.stage}}
+    DB_USER: ${self:custom.db_user.${self:provider.stage}}
+    DB_PASSWORD: ${self:custom.db_password.${self:provider.stage}}
+    DATABASE: ${self:custom.database.${self:provider.stage}}
+
+# Custom Variables
+custom:
+  stages:
+    - dev
+    - staging
+    - prod
+
+  db_host:
+    dev: dev_db.example.com
+    prod: ${ssm:app/prod/db_host}
+    staging: ${ssm:app/staging/db_host}
+
+  db_user:
+    dev: dev_user
+    prod: ${ssm:app/prod/db_user}
+    staging: ${ssm:app/staging/db_user}
+
+  db_password:
+    dev: dev_password
+    prod: ${ssm:app/prod/db_password~true}
+    staging: ${ssm:app/staging/db_password~true}
+
+  database:
+    dev: dev_database
+    prod: ${ssm:app/prod/database}
+    staging: ${ssm:app/staging/database}
+```
+deploy with specific stage parameter
+```
+sls deploy --stage prod
 ```

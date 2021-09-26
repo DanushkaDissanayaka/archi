@@ -1,19 +1,18 @@
 service: sample-app
 
-
-custom:
-  settings:
-    VAR_IN_PARAMETER_STORE: ${ssm:serverless-parameter-store-secret-value}
-    VAR_IN_PARAMETER_KMS_STORE: ${ssm:/serverless/parameter/kms-secret-value~true}
-
 provider:
   name: aws
   runtime: nodejs14.x
-  stage: dev
+  stage: ${opt:stage, 'dev'}
   region: us-east-1
   memorySize: 128
-  environment: ${self:custom.settings}
+  # environment: ${self:custom.settings}
   lambdaHashingVersion: 20201221
+  environment:
+    DB_HOST: ${self:custom.db_host.${self:provider.stage}}
+    DB_USER: ${self:custom.db_user.${self:provider.stage}}
+    DB_PASSWORD: ${self:custom.db_password.${self:provider.stage}}
+    DATABASE: ${self:custom.database.${self:provider.stage}}
 
 functions:
   app:
@@ -31,5 +30,35 @@ functions:
     handler: src/scheduler.handler
     events:
       - schedule:
-          rate: cron(0 3-13 ? * MON-FRI *)
+          rate: cron(0 20-6 ? * MON-FRI *)
           enabled: false
+
+custom:
+  # settings:
+  #   VAR_IN_PARAMETER_STORE: ${ssm:serverless-parameter-store-secret-value}
+  #   VAR_IN_PARAMETER_KMS_STORE: ${ssm:/serverless/parameter/kms-secret-value~true}
+  stages:
+    - dev
+    - staging
+    - prod
+
+  db_host:
+    dev: dev_db.example.com
+    prod: ${ssm:/app/prod/db_host}
+    staging: ${ssm:/app/staging/db_host}
+
+  db_user:
+    dev: dev_user
+    prod: ${ssm:/app/prod/db_user}
+    staging: ${ssm:/app/staging/db_user}
+
+  db_password:
+    dev: dev_password
+    prod: ${ssm:/app/prod/db_password~true}
+    staging: ${ssm:/app/staging/db_password~true}
+
+  database:
+    dev: dev_database
+    prod: ${ssm:/app/prod/database}
+    staging: ${ssm:/app/staging/database}
+
